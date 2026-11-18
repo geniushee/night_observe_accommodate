@@ -1,5 +1,5 @@
 import React from "react";
-import { Eye, EyeOff, Layers, Sliders, Info, Key } from "lucide-react";
+import { Eye, EyeOff, Layers, Sliders, Info } from "lucide-react";
 
 interface MapControlsProps {
   showOverlay: boolean;
@@ -10,7 +10,6 @@ interface MapControlsProps {
   onChangeMapType: (type: string) => void;
   onToggleLegend: () => void;
   isLegendOpen: boolean;
-  onOpenKeyModal: () => void;
 }
 
 export const MapControls: React.FC<MapControlsProps> = ({
@@ -22,7 +21,6 @@ export const MapControls: React.FC<MapControlsProps> = ({
   onChangeMapType,
   onToggleLegend,
   isLegendOpen,
-  onOpenKeyModal,
 }) => {
   return (
     <div className="absolute top-6 right-6 z-30 flex flex-col gap-3">
@@ -101,13 +99,6 @@ export const MapControls: React.FC<MapControlsProps> = ({
             }`}
           >
             <Info className="w-3.5 h-3.5" /> 범례 {isLegendOpen ? "닫기" : "보기"}
-          </button>
-          <button
-            onClick={onOpenKeyModal}
-            className="flex items-center gap-1 text-gray-400 hover:text-cyan-300 transition cursor-pointer"
-            title="네이버 지도 API 키 설정"
-          >
-            <Key className="w-3.5 h-3.5" /> API 설정
           </button>
         </div>
       </div>

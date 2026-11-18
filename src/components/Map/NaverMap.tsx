@@ -2,14 +2,13 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { loadNaverMapScript } from "../../utils/naverMapLoader";
 import { getTop10NearestStays } from "../../utils/stayFilter";
 import type { StayItem } from "../../types/stay";
-import { AlertCircle, Key, Sparkles } from "lucide-react";
+import { AlertCircle, Sparkles } from "lucide-react";
 
 interface NaverMapProps {
   clientId: string;
   showOverlay: boolean;
   opacity: number;
   mapType: string;
-  onOpenKeyModal: () => void;
   onUpdateTop10Stays?: (stays: StayItem[]) => void;
   selectedStayId?: string | null;
   onSelectStay?: (stay: StayItem) => void;
@@ -20,7 +19,6 @@ export const NaverMap: React.FC<NaverMapProps> = ({
   showOverlay,
   opacity,
   mapType,
-  onOpenKeyModal,
   onUpdateTop10Stays,
   selectedStayId,
   onSelectStay,
@@ -223,8 +221,8 @@ export const NaverMap: React.FC<NaverMapProps> = ({
       .then(() => {
         if (!mapElementRef.current || !window.naver?.maps) return;
 
-        // 대한민국 중심 좌표 (위도 36.5°N, 경도 128.2°E - 청정 산간 중심)
-        const center = new window.naver.maps.LatLng(37.2, 128.4);
+        // 강원도 지리적 중심 좌표 (위도 37.75°N, 경도 128.35°E: 평창/홍천/인제/강릉 중심)
+        const center = new window.naver.maps.LatLng(37.75, 128.35);
 
         const southKoreaBounds = new window.naver.maps.LatLngBounds(
           new window.naver.maps.LatLng(32.8, 124.0),
@@ -233,7 +231,7 @@ export const NaverMap: React.FC<NaverMapProps> = ({
 
         const mapOptions = {
           center,
-          zoom: 8,
+          zoom: 9, // 강원도 전역이 화면에 한눈에 보기 좋게 들어오는 최적 줌 레벨
           minZoom: 6,
           maxZoom: 18,
           maxBounds: southKoreaBounds,
@@ -360,18 +358,13 @@ export const NaverMap: React.FC<NaverMapProps> = ({
           <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl mb-4 text-amber-400">
             <AlertCircle className="w-8 h-8" />
           </div>
-          <h2 className="text-lg font-bold mb-2">네이버 지도 API 설정 안내</h2>
-          <p className="text-sm text-gray-400 max-w-md mb-6 leading-relaxed">
+          <h2 className="text-lg font-bold mb-2">네이버 지도 로드 실패</h2>
+          <p className="text-sm text-gray-400 max-w-md mb-2 leading-relaxed">
             {error}
-            <br />
-            NCP 콘솔의 <b>Application &gt; 인증 정보</b>에서 발급받은 <b>Client ID (ncpKeyId)</b>를 등록해 주세요.
           </p>
-          <button
-            onClick={onOpenKeyModal}
-            className="flex items-center gap-2 px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/25 transition transform hover:-translate-y-0.5 cursor-pointer"
-          >
-            <Key className="w-4 h-4" /> Client ID 입력하기
-          </button>
+          <p className="text-xs text-gray-500">
+            <code>.env</code> 파일의 <code>VITE_NAVER_MAP_CLIENT_ID</code> 및 NCP 콘솔 Web 서비스 URL을 확인해 주세요.
+          </p>
         </div>
       )}
     </div>

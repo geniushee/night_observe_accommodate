@@ -1,43 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { NaverMap } from "./components/Map/NaverMap";
 import { MapControls } from "./components/Map/MapControls";
 import { LegendPanel } from "./components/Map/LegendPanel";
 import { NearbyStaysDrawer } from "./components/Map/NearbyStaysDrawer";
-import { ApiKeyModal } from "./components/Common/ApiKeyModal";
 import type { StayItem } from "./types/stay";
 import { Moon } from "lucide-react";
 
 export function App() {
-  // 환경변수(.env) 우선, 보조로 로컬스토리지에서 Client ID 로드
-  const [clientId, setClientId] = useState<string>(() => {
-    return (
-      import.meta.env.VITE_NAVER_MAP_CLIENT_ID ||
-      localStorage.getItem("naver_map_client_id") ||
-      ""
-    );
-  });
+  // .env 환경변수에서 네이버 지도 Client ID 로드
+  const clientId = import.meta.env.VITE_NAVER_MAP_CLIENT_ID || "";
 
   const [showOverlay, setShowOverlay] = useState(true);
   const [opacity, setOpacity] = useState(0.85);
   const [mapType, setMapType] = useState("NORMAL");
-  const [isLegendOpen, setIsLegendOpen] = useState(false); // 초기에는 지도 뷰 확보를 위해 닫힘 상태
-  const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
+  const [isLegendOpen, setIsLegendOpen] = useState(false);
 
   // 화면 중심 인근 상위 10개 숙소 목록 및 선택된 숙소 ID
   const [top10Stays, setTop10Stays] = useState<StayItem[]>([]);
   const [selectedStayId, setSelectedStayId] = useState<string | null>(null);
-
-  // Client ID가 없으면 처음에 자동으로 모달 팝업 열기
-  useEffect(() => {
-    if (!clientId) {
-      setIsKeyModalOpen(true);
-    }
-  }, [clientId]);
-
-  const handleSaveKey = (newKey: string) => {
-    localStorage.setItem("naver_map_client_id", newKey);
-    setClientId(newKey);
-  };
 
   const handleSelectStay = (stay: StayItem) => {
     setSelectedStayId(stay.id);
@@ -51,7 +31,6 @@ export function App() {
         showOverlay={showOverlay}
         opacity={opacity}
         mapType={mapType}
-        onOpenKeyModal={() => setIsKeyModalOpen(true)}
         onUpdateTop10Stays={setTop10Stays}
         selectedStayId={selectedStayId}
         onSelectStay={handleSelectStay}
@@ -87,7 +66,6 @@ export function App() {
         onChangeMapType={setMapType}
         onToggleLegend={() => setIsLegendOpen((prev) => !prev)}
         isLegendOpen={isLegendOpen}
-        onOpenKeyModal={() => setIsKeyModalOpen(true)}
       />
 
       {/* 4. 화면 중심 기준 가장 가까운 10개 숙소 가로 슬라이더 바텀 시트 */}
@@ -99,14 +77,6 @@ export function App() {
 
       {/* 5. 좌측 하단 광공해 등급 범례 패널 */}
       <LegendPanel isOpen={isLegendOpen} onClose={() => setIsLegendOpen(false)} />
-
-      {/* 6. 네이버 지도 Client ID 설정 모달 */}
-      <ApiKeyModal
-        isOpen={isKeyModalOpen}
-        onClose={() => setIsKeyModalOpen(false)}
-        currentKey={clientId}
-        onSaveKey={handleSaveKey}
-      />
     </div>
   );
 }
