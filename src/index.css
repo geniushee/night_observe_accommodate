@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #020617;
+}
+
+/* 네이버 지도 내 컨트롤 여백 및 스타일 미세조정 */
+.nmap-custom-control {
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.35);
+}

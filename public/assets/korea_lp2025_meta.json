@@ -1,0 +1,12 @@
+{
+  "title": "Korea Light Pollution 2025 (VIIRS)",
+  "source": "David J. Lorenz (VIIRS 2025)",
+  "bounds": {
+    "south": 33.0,
+    "north": 38.9,
+    "west": 124.5,
+    "east": 132.0
+  },
+  "width": 900,
+  "height": 708
+}
